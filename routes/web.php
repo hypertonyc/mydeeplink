@@ -18,3 +18,10 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/', 'HomeController@index')->name('home');
+
+// create deeplink
+Route::post('/api/deeplink', 'DeeplinkController@create');
+// update deeplink
+Route::put('/api/deeplink/{deeplink_id}', 'DeeplinkController@update');
+// delete deeplink
+Route::delete('/api/deeplink/{deeplink_id}', 'DeeplinkController@delete');
