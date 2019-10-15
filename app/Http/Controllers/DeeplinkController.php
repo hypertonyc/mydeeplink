@@ -7,33 +7,125 @@ use Illuminate\Support\Facades\Auth;
 
 use App\User;
 use App\Deeplink;
+use App\Webuser;
+use App\Click;
 
 class DeeplinkController extends Controller
 {
-  /**
-   * Create a new controller instance.
-   *
-   * @return void
-   */
+
   public function __construct()
   {
       $this->middleware('auth');
   }
 
-  private function generateLinkHash()
+  private function getClickInfo($request)
   {
-    return 'hash';
+    $platform = 0;
+    $country = $request->server('GEOIP_COUNTRY_NAME','Неизвестно');
+    $city = $request->server('GEOIP_CITY','Неизвестно');
+    $ipaddress = $request->server('GEOIP_ADDR','Неизвестно');
+    $user_agent = $request->server('HTTP_USER_AGENT','Неизвестно');
+
+    if(stripos($user_agent,'iPhone') || stripos($user_agent,'iPod'))
+    {
+      $platform = 1;
+    }
+    else if(stripos($user_agent,'Android'))
+    {
+      $platform = 2;
+    }
+
+    return array(
+      'platform' => $platform,
+      'country' => $country,
+      'city' => $city,
+      'ipaddress' => $ipaddress,
+    );
   }
 
-  /**
-   * Show the application dashboard.
-   *
-   * @return \Illuminate\Contracts\Support\Renderable
-   */
+  private function generateLinkHash($cnt)
+  {
+    $alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    $hash = '';
+
+    for ($i = 0; $i < $cnt; $i++)
+    {
+      $hash = $hash . substr($alphabet,rand(0,strlen($alphabet)),1);
+    }
+
+    return $hash;
+  }
+
+  public function click(Request $request,$hash)
+  {
+    // TODO: Use cache
+    $deeplink = Deeplink::where('hash', $hash)->first();
+
+    if($deeplink)
+    {
+      $info = $this->getClickInfo($request);
+
+      // Webuser
+      $webuser = null;
+      $user_hash = $request->cookie('tourismm');
+
+      if($user_hash)
+      {
+        $webuser = Webuser::where('hash',$user_hash)->first();
+      }
+
+      while(is_null($webuser))
+      {
+        try
+        {
+          $webuser = new Webuser();
+          $webuser->name = '';
+          $webuser->hash = $this->generateLinkHash(10);
+          $webuser->save();
+        }
+        catch(\Exception $e)
+        {
+          $webuser = null;
+        }
+      }
+
+      $click = new Click();
+      $click->deeplink_id = $deeplink->id;
+      $click->webuser_id = $webuser->id;
+      $click->platform = $info['platform'];
+      $click->country = $info['country'];
+      $click->city = $info['city'];
+      $click->ipaddress = $info['ipaddress'];
+      $click->save();
+
+      $link_url = '';
+
+      if($info['platform'] == 1)
+      {
+          $link_url = 'instagram://user?username='.$deeplink->instagram;
+      }
+      else if ($info['platform'] == 2)
+      {
+          $link_url = 'intent://instagram.com/_u/'.$deeplink->instagram.'/#Intent;package=com.instagram.android;scheme=https;end';
+      }
+      else
+      {
+          $link_url = 'https://instagram.com/'.$deeplink->instagram;
+      }
+
+      return response()
+              ->view('deeplink',['link_url' => $link_url])
+              ->cookie('tourismm', $webuser->hash, 43200);
+    }
+
+    return response('', 404);
+  }
+
   public function index()
   {
-    $deeplinks = Deeplink->where('user_id', Auth::id())->orderBy('created_at','desc')->get();
-    return response()->json(['deeplinks' => $deeplinks->toArray()]);
+    $deeplinks = Deeplink::where('user_id', Auth::id())->orderBy('created_at','desc')->get();
+
+    return response()->json(['deeplinks' => $deeplinks]);
   }
 
   public function create(Request $request)
@@ -51,11 +143,11 @@ class DeeplinkController extends Controller
       {
         $newDeeplink = new Deeplink();
         $newDeeplink->user_id = Auth::id();
-        $newDeeplink->name = $newGroupName;
-        $newDeeplink->profile = $instagramProfile;
-        $newDeeplink->hash = generateLinkHash();
+        $newDeeplink->name = 'Без названия';
+        $newDeeplink->instagram = $instagramProfile;
+        $newDeeplink->hash = $this->generateLinkHash(8);
 
-        $newDevgroup->save();
+        $newDeeplink->save();
       }
       catch (\Exception $e)
       {
@@ -76,37 +168,33 @@ class DeeplinkController extends Controller
     $deeplinkId = $request->input('id');
     $deeplinkName = $request->input('name');
 
-    $curDeeplink = Devgroup::find($deeplinkId);
+    $curDeeplink = Deeplink::find($deeplinkId);
 
     if($curDeeplink->user_id == Auth::id())
     {
-      $curDeeplink->name = $groupName;
+      $curDeeplink->name = $deeplinkName;
       $curDeeplink->save();
+
       return response()->json(['error'=>false,'deeplink' => $curDeeplink]);
     }
-    else
-    {
-      return response()->json(['error'=>true,'deeplink' => null]);
-    }
+
+    return response('', 404);
   }
 
   public function delete($deeplink_id)
   {
-    $this->validate($request, [
-        'id' => 'required|integer'
-    ]);
+    if(intval($deeplink_id) < 1)
+    {
+        return response('', 404);
+    }
 
-    $deeplinkId = $request->input('id');
-    $curDeeplink = Devgroup::find($deeplinkId);
-
+    $curDeeplink = Deeplink::find($deeplink_id);
     if($curDeeplink->user_id == Auth::id())
     {
       $curDeeplink->delete();
-      return response()->json(['error'=>fasle]);
+      return response('',200);
     }
-    else
-    {
-      return response()->json(['error'=>true]);
-    }
+
+    return response('', 404);
   }
 }

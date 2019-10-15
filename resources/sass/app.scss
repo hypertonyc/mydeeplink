@@ -9,9 +9,9 @@
 
 // Font Awesome
 @import '~@fortawesome/fontawesome-free/scss/fontawesome';
-// @import '~@fortawesome/fontawesome-free/scss/solid.scss';
+@import '~@fortawesome/fontawesome-free/scss/solid.scss';
 @import '~@fortawesome/fontawesome-free/scss/regular.scss';
-// @import '~@fortawesome/fontawesome-free/scss/brands.scss';
+//@import '~@fortawesome/fontawesome-free/scss/brands.scss';
 
 p
 {
@@ -20,5 +20,14 @@ p
 
 div.block
 {
-  margin: 1rem 0 2rem;
+  margin: 1rem 0 1.4rem;
+}
+
+.fade-enter-active, .fade-leave-active
+{
+  transition: opacity .2s ease;
+}
+.fade-enter, .fade-leave-to
+{
+  opacity: 0;
 }

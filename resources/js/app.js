@@ -8,16 +8,11 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
-/**
- * The following block of code may be used to automatically register your
- * Vue components. It will recursively scan this directory for the Vue
- * components and automatically register them with their "basename".
- *
- * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
- */
-
-// const files = require.context('./', true, /\.vue$/i)
-// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
+import VueToastr from "vue-toastr";
+Vue.use(VueToastr,{
+  defaultTimeout: 3000,
+  defaultPosition: "toast-bottom-right"
+});
 
 Vue.component('main-page', require('./components/MainPage.vue').default);
 Vue.component('main-page-profile', require('./components/main/Profile.vue').default);

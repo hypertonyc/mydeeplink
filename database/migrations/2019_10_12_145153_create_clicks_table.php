@@ -18,7 +18,9 @@ class CreateClicksTable extends Migration
             $table->unsignedBigInteger('deeplink_id');
             $table->unsignedBigInteger('webuser_id');
             $table->tinyInteger('platform');
-            $table->string('geo');
+            $table->string('country');
+            $table->string('city');
+            $table->string('ipaddress');
             $table->timestamps();
 
             $table->foreign('deeplink_id')->references('id')->on('deeplinks');

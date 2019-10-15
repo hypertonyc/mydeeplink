@@ -12,9 +12,9 @@
     </div>
     <div class="block">
       <h2>Тариф</h2>
-      <p class="h5">Текущий тариф: <a href="#">Бесплатный</a></p>
-      <p class="h5">Оплачен до: <a href="#">8 ноября</a></p>
-      <p class="h5">Тарифные клики: <a href="#">500</a></p>
+      <p class="h5">Текущий тариф: <a href="#" v-on:click.prevent="openPayments">Бесплатный</a></p>
+      <p class="h5">Оплачен до: <a href="#" v-on:click.prevent="openPayments">8 ноября</a></p>
+      <p class="h5">Тарифные клики: <a href="#" v-on:click.prevent="openPayments">500</a></p>
     </div>
     <div class="block">
       <h2>Уведомления</h2>
@@ -27,7 +27,7 @@
       <div class="form-check">
         <input class="form-check-input" type="checkbox" value="" id="cb-email-news">
         <label class="form-check-label" for="cb-email-news">
-          Отправлять email с новостями сервиса 
+          Отправлять email с новостями сервиса
         </label>
       </div>
     </div>
@@ -35,9 +35,12 @@
 </template>
 
 <script>
-    export default {
-        mounted() {
-            console.log('Component mounted.')
-        }
+  export default {
+    props: ['currentUser'],
+    methods: {
+      openPayments() {
+        $('#myTab a[href="#payments"]').tab('show');
+      }
     }
+  }
 </script>
