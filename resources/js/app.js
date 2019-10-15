@@ -18,6 +18,9 @@ Vue.component('main-page', require('./components/MainPage.vue').default);
 Vue.component('main-page-profile', require('./components/main/Profile.vue').default);
 Vue.component('main-page-links', require('./components/main/Links.vue').default);
 Vue.component('main-page-statistics', require('./components/main/Statistics.vue').default);
+Vue.component('main-page-payments', require('./components/main/Payments.vue').default);
+Vue.component('main-page-tariffs', require('./components/main/Tariffs.vue').default);
+Vue.component('main-page-contacts', require('./components/main/Contacts.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

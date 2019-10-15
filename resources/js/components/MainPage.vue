@@ -16,6 +16,9 @@
                   <a class="nav-link" id="payments-tab" data-toggle="tab" href="#payments" role="tab" aria-controls="payments" aria-selected="false">Оплата</a>
                 </li>
                 <li class="nav-item">
+                  <a class="nav-link" id="tariffs-tab" data-toggle="tab" href="#tariffs" role="tab" aria-controls="tariffs" aria-selected="false">Тарифы</a>
+                </li>
+                <li class="nav-item">
                   <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Тех. поддержка</a>
                 </li>
               </ul>
@@ -23,8 +26,9 @@
                 <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab"><main-page-profile v-bind:currentUser="user"></main-page-profile></div>
                 <div class="tab-pane fade" id="links" role="tabpanel" aria-labelledby="links-tab"><main-page-links v-bind:currentUser="user"></main-page-links></div>
                 <div class="tab-pane fade" id="statistics" role="tabpanel" aria-labelledby="statistics-tab"><main-page-statistics v-bind:currentUser="user"></main-page-statistics></div>
-                <div class="tab-pane fade" id="payments" role="tabpanel" aria-labelledby="payments-tab">payments</div>
-                <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">contact</div>
+                <div class="tab-pane fade" id="payments" role="tabpanel" aria-labelledby="payments-tab"><main-page-payments v-bind:currentUser="user"></main-page-payments></div>
+                <div class="tab-pane fade" id="tariffs" role="tabpanel" aria-labelledby="tariffs-tab"><main-page-tariffs v-bind:currentUser="user"></main-page-tariffs></div>
+                <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab"><main-page-contacts></main-page-contacts></div>
               </div>
             </div>
         </div>

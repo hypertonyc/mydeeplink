@@ -2,19 +2,17 @@
   <div>
     <div class="block">
       <h2>Аккаунт</h2>
-      <p class="h5">Email: hypertonyc@mail.ru</p>
+      <p class="h5">Email:&nbsp;hypertonyc@mail.ru</p>
       <div class="row">
         <div class="col-md-12">
-          <!--<input type="password" class="form-control" id="inputPassword" placeholder="Password">-->
           <button type="button" class="btn btn-outline-secondary">Изменить пароль</button>
         </div>
       </div>
     </div>
     <div class="block">
       <h2>Тариф</h2>
-      <p class="h5">Текущий тариф: <a href="#" v-on:click.prevent="openPayments">Бесплатный</a></p>
-      <p class="h5">Оплачен до: <a href="#" v-on:click.prevent="openPayments">8 ноября</a></p>
-      <p class="h5">Тарифные клики: <a href="#" v-on:click.prevent="openPayments">500</a></p>
+      <p class="h5">Текущий тариф:&nbsp;<a href="#" v-on:click.prevent="openPayments">Бесплатный</a></p>
+      <p class="h5">Дата блокировки:&nbsp;<a href="#" v-on:click.prevent="openPayments">8 ноября</a></p>
     </div>
     <div class="block">
       <h2>Уведомления</h2>

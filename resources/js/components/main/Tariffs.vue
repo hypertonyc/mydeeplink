@@ -1,70 +1,60 @@
 <template>
   <div>
     <div class="block">
-      <h2>Создать новый диплинк</h2>
+      <h2>Создать новый тариф</h2>
       <div class="form-group">
-        <label for="instagram-profile">Введите профиль Instagram:</label>
+        <label for="instagram-profile">Введите наименование тарифа:</label>
         <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon1">@</span>
-          </div>
-          <input type="text" class="form-control" placeholder="tourism.smm" aria-label="Профиль" aria-describedby="basic-addon1" id="instagram-profile" v-model="newProfile">
+          <input type="text" class="form-control" placeholder="Новый тариф" aria-label="Тариф" id="instagram-profile" v-model="newTariffName">
         </div>
-        <small id="profile-note" class="form-text text-muted">Необходимо ввести профиль, на который Вы будете вести трафик Вашей рекламной кампании</small>
       </div>
-      <button type="button" class="btn btn-primary" v-on:click.prevent="onCreateDeeplink">Сгенерировать ссылку</button>
+      <button type="button" class="btn btn-primary" v-on:click.prevent="onCreateTariff">Создать тариф</button>
     </div>
     <div class="block">
-      <h2>Мои диплинки</h2>
+      <h2>Мои тарифы</h2>
       <table class="table">
         <thead>
           <tr>
             <th scope="col">#</th>
             <th scope="col">Наименование</th>
-            <th scope="col">Ссылка</th>
-            <th scope="col">Профиль</th>
-            <th scope="col">Клики</th>
+            <th scope="col">Описание</th>
+            <th scope="col">Количество дней</th>
+            <th scope="col">Цена</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(deeplink, idx) in currentUser.deeplinks" v-bind:key="deeplink.id">
+          <tr v-for="(tariff, idx) in tariffs" v-bind:key="tariff.id">
             <th scope="row">{{idx + 1}}</th>
             <td>
-              <p><strong>{{deeplink.name}}</strong></p>
+              <p><strong>{{tariff.name}}</strong></p>
               <p><a href="#" v-on:click.prevent="onRenameClick(deeplink)"><i class="far fa-edit"></i>&nbsp;Изменить название</a></p>
               <p><a href="#" class="text-danger" v-on:click.prevent="onDeleteClick(deeplink)"><i class="far fa-trash-alt"></i>&nbsp;Удалить диплинк</a></p>
             </td>
-            <td>
-              <p><strong><a :href="deeplink.url" target="_blank">{{deeplink.url}}</a></strong></p>
-              <p><a href="#" v-on:click.prevent="onCopyUrl(deeplink.url)"><i class="far fa-copy"></i>Скопировать</a></p>
-            </td>
-            <td><strong>@{{deeplink.instagram}}</strong></td>
-            <td>
-              <p><strong>Всего кликов: 0</strong></p>
-              <p><small>Уникальных: 0</small></p>
-            </td>
+            <td>{{tariff.description}}</td>
+            <td>{{tariff.value}}</td>
+            <td>{{tariff.price}}</td>
           </tr>
         </tbody>
       </table>
     </div>
-    <modalemptydeeplink></modalemptydeeplink>
-    <modalrenamedeeplink v-bind:deeplinkItem="currentDeeplink" v-on:update="onDeeplinkUpdate"></modalrenamedeeplink>
-    <modaldeletedeeplink v-bind:deeplinkItem="currentDeeplink" v-on:update="onDeeplinkDelete"></modaldeletedeeplink>
+    <modalemptytariff></modalemptytariff>
+    <modaledittariff v-bind:tariffItem="currentTariff" v-on:update="onTariffUpdate"></modaledittariff>
+    <modaldeletetariff v-bind:tariffItem="currentTariff" v-on:update="onTariffDelete"></modaldeletetariff>
   </div>
 </template>
 
 <script>
-  import modalemptydeeplink from './ModalEmptyDeeplink.vue';
-  import modalrenamedeeplink from './ModalRenameDeeplink.vue';
-  import modaldeletedeeplink from './ModalDeleteDeeplink.vue';
+  import modalemptytariff from './ModalEmptyTariff.vue';
+  import modaledittariff from './ModalEditTariff.vue';
+  import modaldeletetariff from './ModalDeleteTariff.vue';
 
   export default {
     props: ['currentUser'],
     data() {
       return {
-        newProfile: '',
-        currentDeeplink: {},
-        deeplinks: []
+        newTariffName: '',
+        currentTariff: {},
+        tariffs: []
       }
     },
     methods: {
@@ -74,22 +64,14 @@
         //   this.deeplinks = response.data.deeplinks
         // });
       },
-      onCreateDeeplink() {
-        if(this.newProfile)
+      onCreateTariff() {
+        if(this.newTariffName)
         {
-          var input = {
-            instagramProfile: this.newProfile
-          };
-
-          axios.post('/api/deeplink', input)
-          .then(response => {
-            this.newProfile = '';
-            this.getDeeplinks();
-          });
+          $('#modal-tariff').modal('show');
         }
         else
         {
-          $('#modal-deeplink-empty').modal('show');
+          $('#modal-tariff-empty').modal('show');
         }
       },
       onRenameClick(ADeeplink) {
@@ -140,9 +122,9 @@
       }
     },
     components: {
-      'modalemptydeeplink': modalemptydeeplink,
-      'modalrenamedeeplink': modalrenamedeeplink,
-      'modaldeletedeeplink': modaldeletedeeplink
+      'modalemptytariff': modalemptytariff,
+      'modaledittariff': modaledittariff,
+      'modaldeletetariff': modaldeletetariff
     }
   }
 </script>
